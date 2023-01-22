@@ -300,7 +300,7 @@ async def send_to_all(message: types.Message):
                 await bot.send_message(user, new_message)
                 await asyncio.sleep(0.1)
                 count += 1
-            except aiogram.utils.exceptions.ChatNotFound:
+            except (aiogram.utils.exceptions.ChatNotFound, aiogram.utils.exceptions.BotBlocked):
                 bad += 1
         await message.answer(f"Сообщено было разослано {count} участникам OSO.\nУ {bad} ранее зарегистрированных пользователей удалён чат с ботом.")
 
