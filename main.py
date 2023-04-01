@@ -53,13 +53,13 @@ async def process_callback_ref_link(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, "(предложение партнеру по бизнесу)\n📢 \nПриветстсвую! Недавно мне предложили, очень интересный инструмент для получения трафика новых бизнес партнеров в телеграмм.\nТут короткая презентация - https://youtu.be/03Z57SRs3bk. \nЕсли интересно, вот ссылка для активации бота - "+ text, disable_web_page_preview = True)
     await bot.send_message(callback_query.from_user.id, "(предложение другу-сетевику)\n📢 \nПривет! Советую новый телеграмм бот, для поиска партнеров в бизнес.\nТут короткая презентация - https://youtu.be/03Z57SRs3bk \nВот ссылка активации бота - " + text, disable_web_page_preview=True)
     await bot.send_message(callback_query.from_user.id, "(текст для поста в социальной сети, тут найдете для них иллюстрации - https://joinme-leader.wixsite.com/oso-foto) \n📢\nПредставляю бесплатный телеграмм бот для развития вашего бизнеса.\nВ первую очередь, полезен для сетевого бизнеса, можно использовать для раскачки блогов, youtube/telegram каналов, рекламы интернет магазинов и т.п.\nСсылка для активации бота - "+text+"\nПосмотрите короткую презентацию -  https://youtu.be/03Z57SRs3bk", disable_web_page_preview=True)
-    # Пока блокирую {то что заблокировал} вывод qrcode, так как никто не пользуется, вместо этого вывожу примеры рекламных постов/сообщений☝
-    #{ref_link_qr = qrcode.make(text)
-    #buffered = BytesIO()
-    #ref_link_qr.save(buffered, format="PNG")
-    #await bot.send_message(callback_query.from_user.id, "_А это QR код вашей реферальной ссылки:_\n", parse_mode="Markdown")
-    #await bot.send_photo(callback_query.from_user.id, buffered.getvalue())
-    #buffered.close()}
+    # Пока блокирую вывод qrcode, так как никто не пользуется, вместо этого вывожу примеры рекламных постов/сообщений☝
+    # ref_link_qr = qrcode.make(text)
+    # buffered = BytesIO()
+    # ref_link_qr.save(buffered, format="PNG")
+    # await bot.send_message(callback_query.from_user.id, "_А это QR код вашей реферальной ссылки:_\n", parse_mode="Markdown")
+    # await bot.send_photo(callback_query.from_user.id, buffered.getvalue())
+    # buffered.close()
     last_action(callback_query.from_user.id)
     await bot.send_message(callback_query.from_user.id, "_Чем больше ваших друзей увидят ваше сообщение, тем полезней бот будет для вас._", reply_markup=main_menu(), parse_mode="Markdown")
 
@@ -290,7 +290,7 @@ async def send_to_all(message: types.Message):
         bad = 0
         for user in users_list:
             try:
-                await bot.send_message(user, new_message, parse_mode="Markdown", disable_web_page_preview = True)
+                await bot.send_message(user, new_message, disable_web_page_preview=True)
                 await asyncio.sleep(0.1)
                 count += 1
             except (aiogram.utils.exceptions.ChatNotFound, aiogram.utils.exceptions.BotBlocked):
@@ -307,7 +307,8 @@ async def send_to_all(message: types.Message):
 #   обработчик любого другого непредвиденного контента от пользователя
 @dp.message_handler(content_types=types.ContentType.ANY)
 async def unknown_message(message: types.Message):
-    await message.answer("_Я не знаю, что с этим делать.\nДля начала работы с ботом отправь_ \n/start.", parse_mode="Markdown")
+    if not message.from_user.is_bot:
+        await message.answer("_Я не знаю, что с этим делать.\nДля начала работы с ботом отправь_ \n/start.", parse_mode="Markdown")
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
